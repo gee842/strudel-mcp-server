@@ -70,6 +70,98 @@ Then ask Claude:
 - "Generate a jazz chord progression in F major"
 - "Create a drum & bass pattern at 174 BPM"
 
+## 🌐 Chrome Setup (CDP Connection)
+
+### Quick Setup - Automated Script
+
+The easiest way to set up Chrome with remote debugging:
+
+```bash
+cd examples
+./connect-existing-chrome.sh
+```
+
+This automatically:
+- Detects your OS and Chrome installation
+- Launches Chrome with debugging enabled
+- Verifies the connection
+- Updates config.json
+
+### Manual Setup
+
+**macOS:**
+```bash
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222
+```
+
+**Linux:**
+```bash
+google-chrome --remote-debugging-port=9222
+```
+
+**Windows:**
+```cmd
+"C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222
+```
+
+**Create an alias (optional) - Add to `~/.zshrc` or `~/.bash_profile`:**
+```bash
+alias chrome-debug='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222'
+```
+
+### Verify Connection
+
+Check that Chrome debugging is working:
+```bash
+curl http://localhost:9222/json
+```
+
+You should see JSON output listing all open Chrome tabs.
+
+### Configuration
+
+The `config.json` controls the connection mode:
+
+**Connect to existing Chrome** (recommended):
+```json
+{
+  "cdpEndpoint": "http://localhost:9222"
+}
+```
+
+**Launch new Chromium** (default):
+```json
+{
+  "cdpEndpoint": null
+}
+```
+
+### What Happens on Init
+
+1. ✅ Server connects to Chrome on port 9222
+2. ✅ Searches for existing Strudel.cc tabs
+3. ✅ Uses existing tab if found, creates new one if not
+4. ✅ Browser stays visible - you can see everything!
+
+### Troubleshooting
+
+**Connection refused?**
+```bash
+# Check if Chrome is running with debugging:
+lsof -i :9222
+```
+
+**Different port?**
+```bash
+# Launch on different port:
+chrome --remote-debugging-port=9333
+
+# Update config.json:
+{ "cdpEndpoint": "http://localhost:9333" }
+```
+
+**📖 For detailed instructions, advanced options, and more troubleshooting, see [CHROME-DEBUGGING.md](CHROME-DEBUGGING.md)**
+
 ## 🛠️ Available Tools (40+)
 
 ### Core Control (10 tools)
