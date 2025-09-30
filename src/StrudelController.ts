@@ -5,10 +5,10 @@ export class StrudelController {
   private browser: Browser | null = null;
   private page: Page | null = null;
   private analyzer: AudioAnalyzer;
-  private isHeadless: boolean;
+  private cdpEndpoint: string | null;
 
-  constructor(headless: boolean = false) {
-    this.isHeadless = headless;
+  constructor(cdpEndpoint: string | null = null) {
+    this.cdpEndpoint = cdpEndpoint;
     this.analyzer = new AudioAnalyzer();
   }
 
@@ -17,20 +17,47 @@ export class StrudelController {
       return 'Already initialized';
     }
 
-    this.browser = await chromium.launch({
-      headless: this.isHeadless,
-      args: ['--use-fake-ui-for-media-stream'],
-    });
+    // Connect to existing Chrome instance if CDP endpoint provided
+    if (this.cdpEndpoint) {
+      this.browser = await chromium.connectOverCDP(this.cdpEndpoint);
+      const contexts = this.browser.contexts();
 
-    const context = await this.browser.newContext({
-      permissions: ['microphone'],
-    });
+      if (contexts.length === 0) {
+        throw new Error('No browser contexts available in existing Chrome instance');
+      }
 
-    this.page = await context.newPage();
+      const context = contexts[0];
+      const pages = context.pages();
 
-    await this.page.goto('https://strudel.cc/', {
-      waitUntil: 'networkidle',
-    });
+      // Try to find an existing Strudel tab
+      let strudelPage = pages.find(p => p.url().includes('strudel.cc'));
+
+      if (strudelPage) {
+        this.page = strudelPage;
+      } else {
+        // Create new tab if no Strudel tab exists
+        this.page = await context.newPage();
+        await this.page.goto('https://strudel.cc/', {
+          waitUntil: 'networkidle',
+        });
+      }
+    } else {
+      // Launch new Chromium instance (original behavior)
+      this.browser = await chromium.launch({
+        headless: false,
+        args: ['--use-fake-ui-for-media-stream'],
+      });
+
+      const context = await this.browser.newContext({
+        permissions: ['microphone'],
+      });
+
+      this.page = await context.newPage();
+
+      await this.page.goto('https://strudel.cc/', {
+        waitUntil: 'networkidle',
+      });
+    }
 
     await this.page.waitForSelector('.cm-content', { timeout: 10000 });
 

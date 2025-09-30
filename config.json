@@ -1,9 +1,12 @@
 {
-  "headless": false,
+  "cdpEndpoint": null,
   "strudel_url": "https://strudel.cc/",
   "patterns_dir": "./patterns",
   "audio_analysis": {
     "fft_size": 2048,
     "smoothing": 0.8
+  },
+  "_comments": {
+    "cdpEndpoint": "Set to null to launch a new Chrome instance, or provide a CDP endpoint like 'http://localhost:9222' to connect to an existing Chrome instance. To launch Chrome with remote debugging: chrome --remote-debugging-port=9222"
   }
 }

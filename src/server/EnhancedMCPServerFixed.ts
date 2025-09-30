@@ -15,7 +15,7 @@ import { Logger } from '../utils/Logger.js';
 const configPath = './config.json';
 const config = existsSync(configPath) 
   ? JSON.parse(readFileSync(configPath, 'utf-8'))
-  : { headless: false };
+  : { cdpEndpoint: null };
 
 export class EnhancedMCPServerFixed {
   private server: Server;
@@ -43,7 +43,7 @@ export class EnhancedMCPServerFixed {
       }
     );
 
-    this.controller = new StrudelController(config.headless);
+    this.controller = new StrudelController(config.cdpEndpoint || null);
     this.store = new PatternStore('./patterns');
     this.theory = new MusicTheory();
     this.generator = new PatternGenerator();

@@ -2,12 +2,8 @@
 
 > 🎵 Production-ready MCP server for AI-powered music generation with Strudel.cc
 
-<a href="https://glama.ai/mcp/servers/@williamzujkowski/strudel-mcp-server">
-  <img width="380" height="200" src="https://glama.ai/mcp/servers/@williamzujkowski/strudel-mcp-server/badge" alt="Strudel Server MCP server" />
-</a>
-
-[![CI](https://github.com/williamzujkowski/strudel-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/williamzujkowski/strudel-mcp-server/actions)
-[![npm version](https://img.shields.io/npm/v/@williamzujkowski/strudel-mcp-server.svg)](https://www.npmjs.com/package/@williamzujkowski/strudel-mcp-server)
+[![CI](https://github.com/gee842/strudel-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/gee842/strudel-mcp-server/actions)
+[![npm version](https://img.shields.io/npm/v/@gee842/strudel-mcp-server.svg)](https://www.npmjs.com/package/@gee842/strudel-mcp-server)
 [![Tools](https://img.shields.io/badge/tools-40+-green.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -34,13 +30,13 @@ A fully-tested Model Context Protocol (MCP) server that gives Claude complete co
 
 ### From npm
 ```bash
-npm install -g @williamzujkowski/strudel-mcp-server
+npm install -g @gee842/strudel-mcp-server
 ```
 
 ### From Source
 ```bash
 # Clone repository
-git clone https://github.com/williamzujkowski/strudel-mcp-server.git
+git clone https://github.com/gee842/strudel-mcp-server.git
 cd strudel-mcp-server
 
 # Install dependencies
@@ -185,7 +181,7 @@ See [BROWSER_TEST_RESULTS.md](BROWSER_TEST_RESULTS.md) for detailed test results
 ### config.json
 ```json
 {
-  "headless": false,        // Set true for background operation
+  "cdpEndpoint": null,      // Set to null for new Chrome, or "http://localhost:9222" for existing
   "strudel_url": "https://strudel.cc/",
   "patterns_dir": "./patterns",
   "audio_analysis": {
@@ -194,6 +190,43 @@ See [BROWSER_TEST_RESULTS.md](BROWSER_TEST_RESULTS.md) for detailed test results
   }
 }
 ```
+
+### Connect to Existing Chrome Instance
+
+Instead of launching a new Chromium instance, you can connect to an existing Chrome/Chromium browser:
+
+**Step 1: Launch Chrome with remote debugging**
+
+```bash
+# macOS
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222
+
+# Linux
+google-chrome --remote-debugging-port=9222
+
+# Windows
+"C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222
+```
+
+**Step 2: Update config.json**
+
+```json
+{
+  "cdpEndpoint": "http://localhost:9222"
+}
+```
+
+**Step 3: (Optional) Open Strudel.cc**
+
+Open https://strudel.cc/ in a tab in your Chrome instance before running `init`. The server will automatically find and use the existing Strudel tab, or create a new one if needed.
+
+**Benefits:**
+- 🎵 Use your existing Chrome profile and extensions
+- 👀 Keep Chrome visible while working
+- 🔄 Reuse existing Strudel sessions
+- 🛠️ Use Chrome DevTools alongside the MCP server
+
+**📖 For detailed instructions, troubleshooting, and advanced configuration, see [CHROME-DEBUGGING.md](CHROME-DEBUGGING.md)**
 
 ## 🏗️ Architecture
 
@@ -321,4 +354,9 @@ MIT License - see [LICENSE](LICENSE) file
 
 ---
 
-**v2.2.0** - Fully tested with real Strudel.cc interaction | **100% working**
+**v2.2.0** - Forked with CDP connection support | Enhanced by [@gee842](https://github.com/gee842)
+
+---
+
+**Original Repository**: [williamzujkowski/strudel-mcp-server](https://github.com/williamzujkowski/strudel-mcp-server)  
+**Fork Enhancements**: Added support for connecting to existing Chrome instances via CDP
