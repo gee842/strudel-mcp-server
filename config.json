@@ -1,5 +1,5 @@
 {
-  "cdpEndpoint": null,
+  "cdpEndpoint": "http://localhost:9222",
   "strudel_url": "https://strudel.cc/",
   "patterns_dir": "./patterns",
   "audio_analysis": {
